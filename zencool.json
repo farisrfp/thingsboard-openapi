@@ -1,770 +1,657 @@
 {
-  "swagger": "2.0",
+  "openapi": "3.1.0",
   "info": {
     "title": "ZenCool API",
     "description": "API for managing IoT air conditioning systems",
     "version": "1.0.0"
   },
-  "definitions": {
-    "def-0": {
-      "type": "object",
-      "properties": {
-        "page": {
-          "type": "integer",
-          "minimum": 1
-        },
-        "rowsPerPage": {
-          "type": "integer",
-          "minimum": 1
-        },
-        "totalPages": {
-          "type": "integer",
-          "minimum": 0
-        },
-        "totalRows": {
-          "type": "integer",
-          "minimum": 0
-        }
-      },
-      "required": [
-        "page",
-        "rowsPerPage",
-        "totalPages",
-        "totalRows"
-      ],
-      "additionalProperties": false,
-      "title": "PagingResponse"
+  "servers": [
+    {
+      "url": "https://zencool.enigmacamp.com/poc",
+      "description": "Production server"
+    }
+  ],
+  "security": [
+    {
+      "apiKey": []
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "apiKey": {
+        "type": "apiKey",
+        "name": "X-API-Key",
+        "in": "header",
+        "description": "API key for authentication"
+      }
     },
-    "def-1": {
-      "type": "object",
-      "properties": {
-        "status": {
-          "const": "error"
+    "schemas": {
+      "PagingResponse": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "rowsPerPage": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "totalPages": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "totalRows": {
+            "type": "integer",
+            "minimum": 0
+          }
         },
-        "message": {
-          "type": "string"
-        },
-        "code": {
-          "type": "string"
-        }
+        "required": [
+          "page",
+          "rowsPerPage",
+          "totalPages",
+          "totalRows"
+        ],
+        "additionalProperties": false
       },
-      "required": [
-        "status",
-        "message",
-        "code"
-      ],
-      "additionalProperties": false,
-      "title": "ErrorResponse"
-    },
-    "def-2": {
-      "type": "object",
-      "properties": {
-        "status": {
-          "const": "success"
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "const": "error"
+          },
+          "message": {
+            "type": "string"
+          },
+          "code": {
+            "type": "string"
+          }
         },
-        "result": {
-          "type": "object",
-          "properties": {
-            "message": {
-              "type": "string"
+        "required": [
+          "status",
+          "message",
+          "code"
+        ],
+        "additionalProperties": false
+      },
+      "SuccessMessageResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "const": "success"
+          },
+          "result": {
+            "type": "object",
+            "properties": {
+              "message": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "message"
+            ]
+          }
+        },
+        "required": [
+          "status",
+          "result"
+        ],
+        "additionalProperties": false
+      },
+      "StoreResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          },
+          "latitude": {
+            "type": ["null", "string"]
+          },
+          "longitude": {
+            "type": ["null", "string"]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "address",
+          "city"
+        ],
+        "additionalProperties": false
+      },
+      "StoreListResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "const": "success"
+          },
+          "result": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StoreResponse"
             }
           },
-          "required": [
-            "message"
-          ]
-        }
-      },
-      "required": [
-        "status",
-        "result"
-      ],
-      "additionalProperties": false,
-      "title": "SuccessMessageResponse"
-    },
-    "def-3": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string",
-          "format": "uuid"
-        },
-        "name": {
-          "type": "string"
-        },
-        "address": {
-          "type": "string"
-        },
-        "city": {
-          "type": "string"
-        },
-        "latitude": {
-          "type": [
-            "null",
-            "string"
-          ]
-        },
-        "longitude": {
-          "type": [
-            "null",
-            "string"
-          ]
-        },
-        "createdAt": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "updatedAt": {
-          "type": "string",
-          "format": "date-time"
-        }
-      },
-      "required": [
-        "id",
-        "name",
-        "address",
-        "city"
-      ],
-      "additionalProperties": false,
-      "title": "StoreResponse"
-    },
-    "def-4": {
-      "type": "object",
-      "properties": {
-        "status": {
-          "const": "success"
-        },
-        "result": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/def-3"
+          "paging": {
+            "$ref": "#/components/schemas/PagingResponse"
           }
         },
-        "paging": {
-          "$ref": "#/definitions/def-0"
-        }
+        "required": [
+          "status",
+          "result"
+        ]
       },
-      "required": [
-        "status",
-        "result"
-      ],
-      "title": "StoreListResponse"
-    },
-    "def-5": {
-      "type": "object",
-      "properties": {
-        "status": {
-          "const": "success"
-        },
-        "result": {
-          "$ref": "#/definitions/def-3"
-        }
-      },
-      "required": [
-        "status",
-        "result"
-      ],
-      "title": "StoreDetailResponse"
-    },
-    "def-6": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string",
-          "format": "uuid"
-        },
-        "deviceId": {
-          "type": "string",
-          "format": "uuid"
-        },
-        "storeId": {
-          "type": "string",
-          "format": "uuid"
-        },
-        "podId": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "brand": {
-          "type": "string"
-        },
-        "type": {
-          "type": "string"
-        },
-        "powerConsumption": {
-          "type": [
-            "null",
-            "integer"
-          ]
-        },
-        "serialNumber": {
-          "type": [
-            "null",
-            "string"
-          ]
-        }
-      },
-      "required": [
-        "id",
-        "deviceId",
-        "storeId",
-        "podId",
-        "name"
-      ],
-      "additionalProperties": false,
-      "title": "DeviceAssetResponse"
-    },
-    "def-7": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string",
-          "format": "uuid"
-        },
-        "storeId": {
-          "type": "string",
-          "format": "uuid"
-        },
-        "name": {
-          "type": "string"
-        },
-        "createdAt": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "updatedAt": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "store": {
-          "$ref": "#/definitions/def-3"
-        },
-        "assets": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/def-6"
+      "StoreDetailResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "const": "success"
+          },
+          "result": {
+            "$ref": "#/components/schemas/StoreResponse"
           }
         },
-        "pods": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/def-10"
+        "required": [
+          "status",
+          "result"
+        ]
+      },
+      "DeviceAssetResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "deviceId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "storeId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "podId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "brand": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "powerConsumption": {
+            "type": ["null", "integer"]
+          },
+          "serialNumber": {
+            "type": ["null", "string"]
           }
-        }
-      },
-      "required": [
-        "id",
-        "storeId",
-        "name",
-        "createdAt",
-        "updatedAt"
-      ],
-      "additionalProperties": false,
-      "title": "DeviceResponse"
-    },
-    "def-8": {
-      "type": "object",
-      "properties": {
-        "status": {
-          "const": "success"
         },
-        "result": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/def-7"
+        "required": [
+          "id",
+          "deviceId",
+          "storeId",
+          "podId",
+          "name"
+        ],
+        "additionalProperties": false
+      },
+      "MeasurementsResponse": {
+        "type": ["object", "null"],
+        "properties": {
+          "temperature": {
+            "type": ["number", "null"]
+          },
+          "humidity": {
+            "type": ["number", "null"]
+          },
+          "feelsLike": {
+            "type": ["number", "null"]
+          },
+          "rssi": {
+            "type": ["integer", "null"]
+          },
+          "tvoc": {
+            "type": ["integer", "null"]
+          },
+          "co2": {
+            "type": ["integer", "null"]
+          },
+          "iaq": {
+            "type": ["integer", "null"]
           }
         },
-        "paging": {
-          "$ref": "#/definitions/def-0"
-        }
+        "required": [],
+        "additionalProperties": false
       },
-      "required": [
-        "status",
-        "result"
-      ],
-      "title": "DeviceListResponse"
-    },
-    "def-9": {
-      "type": "object",
-      "properties": {
-        "status": {
-          "const": "success"
+      "AcStateResponse": {
+        "type": ["object", "null"],
+        "properties": {
+          "on": {
+            "type": "boolean"
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "cool",
+              "heat",
+              "fan",
+              "dry",
+              "auto"
+            ]
+          },
+          "targetTemperature": {
+            "type": ["integer", "null"],
+            "minimum": 16,
+            "maximum": 30
+          },
+          "temperatureUnit": {
+            "type": "string",
+            "enum": [
+              "C",
+              "F"
+            ]
+          },
+          "fanLevel": {
+            "type": "string",
+            "enum": [
+              "quiet",
+              "low",
+              "medium",
+              "high",
+              "auto"
+            ]
+          },
+          "swing": {
+            "type": "string",
+            "enum": [
+              "stopped",
+              "rangeFull",
+              "horizontal",
+              "vertical"
+            ]
+          },
+          "timestamp": {
+            "type": ["string", "null"],
+            "format": "date-time"
+          }
         },
-        "result": {
-          "$ref": "#/definitions/def-7"
-        }
+        "required": [],
+        "additionalProperties": false
       },
-      "required": [
-        "status",
-        "result"
-      ],
-      "title": "DeviceDetailResponse"
-    },
-    "def-10": {
-      "type": "object",
-      "properties": {
-        "podId": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "roomName": {
-          "type": "string"
-        },
-        "acState": {
-          "oneOf": [
-            {
-              "$ref": "#/definitions/def-12"
+      "PodResponse": {
+        "type": "object",
+        "properties": {
+          "podId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "roomName": {
+            "type": "string"
+          },
+          "acState": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/AcStateResponse"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "measurements": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/MeasurementsResponse"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "connectionStatus": {
+            "type": ["null", "object"],
+            "properties": {
+              "isAlive": {
+                "type": "boolean"
+              },
+              "lastSeen": {
+                "type": ["null", "string"],
+                "format": "date-time"
+              }
             },
-            {
-              "type": "null"
-            }
-          ]
+            "required": [
+              "isAlive"
+            ]
+          }
         },
-        "measurements": {
-          "oneOf": [
-            {
-              "$ref": "#/definitions/def-11"
-            },
-            {
-              "type": "null"
-            }
-          ]
-        },
-        "connectionStatus": {
-          "type": [
-            "null",
-            "object"
-          ],
-          "properties": {
-            "isAlive": {
-              "type": "boolean"
-            },
-            "lastSeen": {
-              "type": [
-                "null",
-                "string"
-              ],
-              "format": "date-time"
+        "required": [
+          "podId",
+          "name",
+          "roomName"
+        ],
+        "additionalProperties": false
+      },
+      "DeviceResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "storeId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "store": {
+            "$ref": "#/components/schemas/StoreResponse"
+          },
+          "assets": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DeviceAssetResponse"
             }
           },
-          "required": [
-            "isAlive"
-          ]
-        }
-      },
-      "required": [
-        "podId",
-        "name",
-        "roomName"
-      ],
-      "additionalProperties": false,
-      "title": "PodResponse"
-    },
-    "def-11": {
-      "type": [
-        "object",
-        "null"
-      ],
-      "properties": {
-        "temperature": {
-          "type": [
-            "number",
-            "null"
-          ]
-        },
-        "humidity": {
-          "type": [
-            "number",
-            "null"
-          ]
-        },
-        "feelsLike": {
-          "type": [
-            "number",
-            "null"
-          ]
-        },
-        "rssi": {
-          "type": [
-            "integer",
-            "null"
-          ]
-        },
-        "tvoc": {
-          "type": [
-            "integer",
-            "null"
-          ]
-        },
-        "co2": {
-          "type": [
-            "integer",
-            "null"
-          ]
-        },
-        "iaq": {
-          "type": [
-            "integer",
-            "null"
-          ]
-        }
-      },
-      "required": [],
-      "additionalProperties": false,
-      "title": "MeasurementsResponse"
-    },
-    "def-12": {
-      "type": [
-        "object",
-        "null"
-      ],
-      "properties": {
-        "on": {
-          "type": "boolean"
-        },
-        "mode": {
-          "type": "string",
-          "enum": [
-            "cool",
-            "heat",
-            "fan",
-            "dry",
-            "auto"
-          ]
-        },
-        "targetTemperature": {
-          "type": [
-            "integer",
-            "null"
-          ],
-          "minimum": 16,
-          "maximum": 30
-        },
-        "temperatureUnit": {
-          "type": "string",
-          "enum": [
-            "C",
-            "F"
-          ]
-        },
-        "fanLevel": {
-          "type": "string",
-          "enum": [
-            "quiet",
-            "low",
-            "medium",
-            "high",
-            "auto"
-          ]
-        },
-        "swing": {
-          "type": "string",
-          "enum": [
-            "stopped",
-            "rangeFull",
-            "horizontal",
-            "vertical"
-          ]
-        },
-        "timestamp": {
-          "type": [
-            "string",
-            "null"
-          ],
-          "format": "date-time"
-        }
-      },
-      "required": [],
-      "additionalProperties": false,
-      "title": "AcStateResponse"
-    },
-    "def-13": {
-      "type": "object",
-      "properties": {
-        "sampleDate": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "temperature": {
-          "type": "number"
-        },
-        "humidity": {
-          "type": "number"
-        },
-        "tvoc": {
-          "type": "integer"
-        },
-        "co2": {
-          "type": "integer"
-        },
-        "iaq": {
-          "type": "integer"
-        },
-        "podId": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "sampleDate",
-        "temperature",
-        "humidity",
-        "podId"
-      ],
-      "additionalProperties": false,
-      "title": "HistoricalMeasurement"
-    },
-    "def-14": {
-      "type": "object",
-      "properties": {
-        "status": {
-          "const": "success"
-        },
-        "result": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/def-13"
-          }
-        }
-      },
-      "required": [
-        "status",
-        "result"
-      ],
-      "title": "HistoricalMeasurementsResponse"
-    },
-    "def-15": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string",
-          "format": "uuid"
-        },
-        "deviceId": {
-          "type": [
-            "null",
-            "string"
-          ],
-          "format": "uuid"
-        },
-        "storeId": {
-          "type": "string",
-          "format": "uuid"
-        },
-        "podId": {
-          "type": [
-            "null",
-            "string"
-          ]
-        },
-        "name": {
-          "type": "string"
-        },
-        "brand": {
-          "type": "string"
-        },
-        "type": {
-          "type": "string"
-        },
-        "powerConsumption": {
-          "type": [
-            "null",
-            "integer"
-          ]
-        },
-        "serialNumber": {
-          "type": [
-            "null",
-            "string"
-          ]
-        }
-      },
-      "required": [
-        "id",
-        "storeId",
-        "name",
-        "brand",
-        "type"
-      ],
-      "additionalProperties": false,
-      "title": "AssetResponse"
-    },
-    "def-16": {
-      "type": "object",
-      "properties": {
-        "status": {
-          "const": "success"
-        },
-        "result": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/def-15"
+          "pods": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PodResponse"
+            }
           }
         },
-        "paging": {
-          "$ref": "#/definitions/def-0"
-        }
+        "required": [
+          "id",
+          "storeId",
+          "name",
+          "createdAt",
+          "updatedAt"
+        ],
+        "additionalProperties": false
       },
-      "required": [
-        "status",
-        "result"
-      ],
-      "title": "AssetListResponse"
-    },
-    "def-17": {
-      "type": "object",
-      "properties": {
-        "status": {
-          "const": "success"
+      "DeviceListResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "const": "success"
+          },
+          "result": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DeviceResponse"
+            }
+          },
+          "paging": {
+            "$ref": "#/components/schemas/PagingResponse"
+          }
         },
-        "result": {
-          "$ref": "#/definitions/def-15"
-        }
+        "required": [
+          "status",
+          "result"
+        ]
       },
-      "required": [
-        "status",
-        "result"
-      ],
-      "title": "AssetDetailResponse"
-    },
-    "def-18": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "minLength": 1
+      "DeviceDetailResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "const": "success"
+          },
+          "result": {
+            "$ref": "#/components/schemas/DeviceResponse"
+          }
         },
-        "deviceId": {
-          "type": "string",
-          "format": "uuid"
-        },
-        "storeId": {
-          "type": "string",
-          "format": "uuid"
-        },
-        "podId": {
-          "type": "string"
-        },
-        "brand": {
-          "type": "string",
-          "minLength": 1
-        },
-        "type": {
-          "type": "string",
-          "minLength": 1
-        },
-        "powerConsumption": {
-          "type": "integer",
-          "minimum": 0
-        },
-        "serialNumber": {
-          "type": "string"
-        }
+        "required": [
+          "status",
+          "result"
+        ]
       },
-      "required": [
-        "name",
-        "storeId",
-        "brand",
-        "type"
-      ],
-      "additionalProperties": false,
-      "title": "CreateAsset"
-    },
-    "def-19": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "minLength": 1
+      "HistoricalMeasurement": {
+        "type": "object",
+        "properties": {
+          "sampleDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "temperature": {
+            "type": "number"
+          },
+          "humidity": {
+            "type": "number"
+          },
+          "tvoc": {
+            "type": "integer"
+          },
+          "co2": {
+            "type": "integer"
+          },
+          "iaq": {
+            "type": "integer"
+          },
+          "podId": {
+            "type": "string"
+          }
         },
-        "deviceId": {
-          "type": "string",
-          "format": "uuid"
-        },
-        "storeId": {
-          "type": "string",
-          "format": "uuid"
-        },
-        "podId": {
-          "type": "string"
-        },
-        "brand": {
-          "type": "string",
-          "minLength": 1
-        },
-        "type": {
-          "type": "string",
-          "minLength": 1
-        },
-        "powerConsumption": {
-          "type": "integer",
-          "minimum": 0
-        },
-        "serialNumber": {
-          "type": "string"
-        }
+        "required": [
+          "sampleDate",
+          "temperature",
+          "humidity",
+          "podId"
+        ],
+        "additionalProperties": false
       },
-      "required": [
-        "name",
-        "storeId",
-        "brand",
-        "type"
-      ],
-      "additionalProperties": false,
-      "title": "UpdateAsset"
-    },
-    "def-20": {
-      "type": "object",
-      "properties": {
-        "term": {
-          "type": "string"
+      "HistoricalMeasurementsResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "const": "success"
+          },
+          "result": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/HistoricalMeasurement"
+            }
+          }
         },
-        "name": {
-          "type": "string"
-        },
-        "brand": {
-          "type": "string"
-        },
-        "type": {
-          "type": "string"
-        },
-        "storeId": {
-          "type": "string",
-          "format": "uuid"
-        },
-        "deviceId": {
-          "type": "string",
-          "format": "uuid"
-        },
-        "podId": {
-          "type": "string"
-        },
-        "page": {
-          "type": "integer",
-          "minimum": 1,
-          "default": 1
-        },
-        "rowsPerPage": {
-          "type": "integer",
-          "minimum": 1,
-          "maximum": 100,
-          "default": 10
-        },
-        "order": {
-          "type": "string"
-        },
-        "sort": {
-          "type": "string",
-          "enum": [
-            "ASC",
-            "DESC"
-          ]
-        }
+        "required": [
+          "status",
+          "result"
+        ]
       },
-      "additionalProperties": false,
-      "title": "AssetQuery"
+      "AssetResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "deviceId": {
+            "type": ["null", "string"],
+            "format": "uuid"
+          },
+          "storeId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "podId": {
+            "type": ["null", "string"]
+          },
+          "name": {
+            "type": "string"
+          },
+          "brand": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "powerConsumption": {
+            "type": ["null", "integer"]
+          },
+          "serialNumber": {
+            "type": ["null", "string"]
+          }
+        },
+        "required": [
+          "id",
+          "storeId",
+          "name",
+          "brand",
+          "type"
+        ],
+        "additionalProperties": false
+      },
+      "AssetListResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "const": "success"
+          },
+          "result": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AssetResponse"
+            }
+          },
+          "paging": {
+            "$ref": "#/components/schemas/PagingResponse"
+          }
+        },
+        "required": [
+          "status",
+          "result"
+        ]
+      },
+      "AssetDetailResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "const": "success"
+          },
+          "result": {
+            "$ref": "#/components/schemas/AssetResponse"
+          }
+        },
+        "required": [
+          "status",
+          "result"
+        ]
+      },
+      "CreateAsset": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "deviceId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "storeId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "podId": {
+            "type": "string"
+          },
+          "brand": {
+            "type": "string",
+            "minLength": 1
+          },
+          "type": {
+            "type": "string",
+            "minLength": 1
+          },
+          "powerConsumption": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "serialNumber": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "storeId",
+          "brand",
+          "type"
+        ],
+        "additionalProperties": false
+      },
+      "UpdateAsset": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "deviceId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "storeId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "podId": {
+            "type": "string"
+          },
+          "brand": {
+            "type": "string",
+            "minLength": 1
+          },
+          "type": {
+            "type": "string",
+            "minLength": 1
+          },
+          "powerConsumption": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "serialNumber": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "storeId",
+          "brand",
+          "type"
+        ],
+        "additionalProperties": false
+      }
     }
   },
   "paths": {
@@ -776,40 +663,56 @@
         ],
         "parameters": [
           {
-            "type": "integer",
-            "minimum": 1,
-            "default": 1,
-            "required": false,
+            "name": "page",
             "in": "query",
-            "name": "page"
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
           },
           {
-            "type": "integer",
-            "minimum": 1,
-            "maximum": 100,
-            "default": 10,
-            "required": false,
+            "name": "rowsPerPage",
             "in": "query",
-            "name": "rowsPerPage"
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 10
+            }
           }
         ],
         "responses": {
           "200": {
-            "description": "Default Response",
-            "schema": {
-              "$ref": "#/definitions/def-4"
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StoreListResponse"
+                }
+              }
             }
           },
           "401": {
-            "description": "Default Response",
-            "schema": {
-              "$ref": "#/definitions/def-1"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
             }
           },
           "500": {
-            "description": "Default Response",
-            "schema": {
-              "$ref": "#/definitions/def-1"
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
             }
           }
         }
@@ -819,63 +722,80 @@
         "tags": [
           "stores"
         ],
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "minLength": 1
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "address": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "city": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "latitude": {
+                    "type": "string"
+                  },
+                  "longitude": {
+                    "type": "string"
+                  }
                 },
-                "address": {
-                  "type": "string",
-                  "minLength": 1
-                },
-                "city": {
-                  "type": "string",
-                  "minLength": 1
-                },
-                "latitude": {
-                  "type": "string"
-                },
-                "longitude": {
-                  "type": "string"
-                }
-              },
-              "required": [
-                "name",
-                "address",
-                "city"
-              ]
+                "required": [
+                  "name",
+                  "address",
+                  "city"
+                ]
+              }
             }
           }
-        ],
+        },
         "responses": {
           "201": {
-            "description": "Default Response",
-            "schema": {
-              "$ref": "#/definitions/def-5"
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StoreDetailResponse"
+                }
+              }
             }
           },
           "400": {
-            "description": "Default Response",
-            "schema": {
-              "$ref": "#/definitions/def-1"
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
             }
           },
           "401": {
-            "description": "Default Response",
-            "schema": {
-              "$ref": "#/definitions/def-1"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
             }
           },
           "500": {
-            "description": "Default Response",
-            "schema": {
-              "$ref": "#/definitions/def-1"
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
             }
           }
         }
@@ -889,36 +809,54 @@
         ],
         "parameters": [
           {
-            "type": "string",
-            "format": "uuid",
-            "required": true,
+            "name": "storeId",
             "in": "path",
-            "name": "storeId"
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
           }
         ],
         "responses": {
           "200": {
-            "description": "Default Response",
-            "schema": {
-              "$ref": "#/definitions/def-5"
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StoreDetailResponse"
+                }
+              }
             }
           },
           "401": {
-            "description": "Default Response",
-            "schema": {
-              "$ref": "#/definitions/def-1"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
             }
           },
           "404": {
-            "description": "Default Response",
-            "schema": {
-              "$ref": "#/definitions/def-1"
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
             }
           },
           "500": {
-            "description": "Default Response",
-            "schema": {
-              "$ref": "#/definitions/def-1"
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
             }
           }
         }
@@ -930,69 +868,94 @@
         ],
         "parameters": [
           {
-            "name": "body",
-            "in": "body",
+            "name": "storeId",
+            "in": "path",
+            "required": true,
             "schema": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "minLength": 1
-                },
-                "address": {
-                  "type": "string",
-                  "minLength": 1
-                },
-                "city": {
-                  "type": "string",
-                  "minLength": 1
-                },
-                "latitude": {
-                  "type": "string"
-                },
-                "longitude": {
-                  "type": "string"
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "address": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "city": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "latitude": {
+                    "type": "string"
+                  },
+                  "longitude": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StoreDetailResponse"
                 }
               }
             }
           },
-          {
-            "type": "string",
-            "format": "uuid",
-            "required": true,
-            "in": "path",
-            "name": "storeId"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Default Response",
-            "schema": {
-              "$ref": "#/definitions/def-5"
-            }
-          },
           "400": {
-            "description": "Default Response",
-            "schema": {
-              "$ref": "#/definitions/def-1"
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
             }
           },
           "401": {
-            "description": "Default Response",
-            "schema": {
-              "$ref": "#/definitions/def-1"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
             }
           },
           "404": {
-            "description": "Default Response",
-            "schema": {
-              "$ref": "#/definitions/def-1"
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
             }
           },
           "500": {
-            "description": "Default Response",
-            "schema": {
-              "$ref": "#/definitions/def-1"
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
             }
           }
         }
@@ -1004,36 +967,54 @@
         ],
         "parameters": [
           {
-            "type": "string",
-            "format": "uuid",
-            "required": true,
+            "name": "storeId",
             "in": "path",
-            "name": "storeId"
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
           }
         ],
         "responses": {
           "200": {
-            "description": "Default Response",
-            "schema": {
-              "$ref": "#/definitions/def-2"
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessMessageResponse"
+                }
+              }
             }
           },
           "401": {
-            "description": "Default Response",
-            "schema": {
-              "$ref": "#/definitions/def-1"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
             }
           },
           "404": {
-            "description": "Default Response",
-            "schema": {
-              "$ref": "#/definitions/def-1"
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
             }
           },
           "500": {
-            "description": "Default Response",
-            "schema": {
-              "$ref": "#/definitions/def-1"
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
             }
           }
         }
@@ -1047,102 +1028,65 @@
         ],
         "parameters": [
           {
-            "type": "string",
-            "format": "uuid",
+            "name": "storeId",
+            "in": "query",
             "required": true,
-            "in": "query",
-            "name": "storeId"
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
           },
           {
-            "type": "integer",
-            "minimum": 1,
-            "default": 1,
-            "required": false,
+            "name": "page",
             "in": "query",
-            "name": "page"
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
           },
           {
-            "type": "integer",
-            "minimum": 1,
-            "maximum": 100,
-            "default": 10,
-            "required": false,
+            "name": "rowsPerPage",
             "in": "query",
-            "name": "rowsPerPage"
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 10
+            }
           }
         ],
         "responses": {
           "200": {
-            "description": "Default Response",
-            "schema": {
-              "$ref": "#/definitions/def-8"
-            }
-          },
-          "401": {
-            "description": "Default Response",
-            "schema": {
-              "$ref": "#/definitions/def-1"
-            }
-          },
-          "500": {
-            "description": "Default Response",
-            "schema": {
-              "$ref": "#/definitions/def-1"
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "Create a new device",
-        "tags": [
-          "devices"
-        ],
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "minLength": 1
-                },
-                "storeId": {
-                  "type": "string",
-                  "format": "uuid"
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeviceListResponse"
                 }
-              },
-              "required": [
-                "name",
-                "storeId"
-              ]
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Default Response",
-            "schema": {
-              "$ref": "#/definitions/def-9"
-            }
-          },
-          "400": {
-            "description": "Default Response",
-            "schema": {
-              "$ref": "#/definitions/def-1"
+              }
             }
           },
           "401": {
-            "description": "Default Response",
-            "schema": {
-              "$ref": "#/definitions/def-1"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
             }
           },
           "500": {
-            "description": "Default Response",
-            "schema": {
-              "$ref": "#/definitions/def-1"
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
             }
           }
         }
@@ -1156,36 +1100,54 @@
         ],
         "parameters": [
           {
-            "type": "string",
-            "format": "uuid",
-            "required": true,
+            "name": "deviceId",
             "in": "path",
-            "name": "deviceId"
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
           }
         ],
         "responses": {
           "200": {
-            "description": "Default Response",
-            "schema": {
-              "$ref": "#/definitions/def-9"
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeviceDetailResponse"
+                }
+              }
             }
           },
           "401": {
-            "description": "Default Response",
-            "schema": {
-              "$ref": "#/definitions/def-1"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
             }
           },
           "404": {
-            "description": "Default Response",
-            "schema": {
-              "$ref": "#/definitions/def-1"
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
             }
           },
           "500": {
-            "description": "Default Response",
-            "schema": {
-              "$ref": "#/definitions/def-1"
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
             }
           }
         }
@@ -1197,59 +1159,84 @@
         ],
         "parameters": [
           {
-            "name": "body",
-            "in": "body",
+            "name": "deviceId",
+            "in": "path",
+            "required": true,
             "schema": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "minLength": 1
-                },
-                "storeId": {
-                  "type": "string",
-                  "format": "uuid"
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "storeId": {
+                    "type": "string",
+                    "format": "uuid"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeviceDetailResponse"
                 }
               }
             }
           },
-          {
-            "type": "string",
-            "format": "uuid",
-            "required": true,
-            "in": "path",
-            "name": "deviceId"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Default Response",
-            "schema": {
-              "$ref": "#/definitions/def-9"
-            }
-          },
           "400": {
-            "description": "Default Response",
-            "schema": {
-              "$ref": "#/definitions/def-1"
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
             }
           },
           "401": {
-            "description": "Default Response",
-            "schema": {
-              "$ref": "#/definitions/def-1"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
             }
           },
           "404": {
-            "description": "Default Response",
-            "schema": {
-              "$ref": "#/definitions/def-1"
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
             }
           },
           "500": {
-            "description": "Default Response",
-            "schema": {
-              "$ref": "#/definitions/def-1"
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
             }
           }
         }
@@ -1263,43 +1250,63 @@
         ],
         "parameters": [
           {
-            "type": "string",
-            "format": "date",
-            "description": "Date in YYYY-MM-DD format",
+            "name": "podId",
+            "in": "path",
             "required": true,
-            "in": "query",
-            "name": "date"
+            "schema": {
+              "type": "string"
+            }
           },
           {
-            "type": "string",
+            "name": "date",
+            "in": "query",
             "required": true,
-            "in": "path",
-            "name": "podId"
+            "description": "Date in YYYY-MM-DD format",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
           }
         ],
         "responses": {
           "200": {
-            "description": "Default Response",
-            "schema": {
-              "$ref": "#/definitions/def-14"
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HistoricalMeasurementsResponse"
+                }
+              }
             }
           },
           "401": {
-            "description": "Default Response",
-            "schema": {
-              "$ref": "#/definitions/def-1"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
             }
           },
           "404": {
-            "description": "Default Response",
-            "schema": {
-              "$ref": "#/definitions/def-1"
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
             }
           },
           "500": {
-            "description": "Default Response",
-            "schema": {
-              "$ref": "#/definitions/def-1"
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
             }
           }
         }
@@ -1313,105 +1320,122 @@
         ],
         "parameters": [
           {
-            "type": "string",
-            "format": "date",
-            "description": "Date in YYYY-MM-DD format for historical states",
-            "required": false,
-            "in": "query",
-            "name": "date"
+            "name": "podId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
           },
           {
-            "type": "string",
-            "required": true,
-            "in": "path",
-            "name": "podId"
+            "name": "date",
+            "in": "query",
+            "required": false,
+            "description": "Date in YYYY-MM-DD format for historical states",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
           }
         ],
         "responses": {
           "200": {
-            "description": "Default Response",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "enum": [
-                    "success"
-                  ]
-                },
-                "result": {
-                  "oneOf": [
-                    {
-                      "$ref": "#/definitions/def-12"
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "enum": [
+                        "success"
+                      ]
                     },
-                    {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "id": {
-                            "type": "string"
-                          },
-                          "podId": {
-                            "type": "string"
-                          },
-                          "time": {
-                            "type": "string",
-                            "format": "date-time"
-                          },
-                          "status": {
-                            "type": "string"
-                          },
-                          "on": {
-                            "type": "boolean"
-                          },
-                          "mode": {
-                            "type": "string"
-                          },
-                          "targetTemp": {
-                            "type": [
-                              "integer",
-                              "null"
-                            ]
-                          },
-                          "fanLevel": {
-                            "type": "string"
-                          },
-                          "swing": {
-                            "type": "string"
-                          },
-                          "reason": {
-                            "type": "string"
-                          },
-                          "failureReason": {
-                            "type": "string"
-                          },
-                          "changedProperties": {
-                            "type": "string"
+                    "result": {
+                      "oneOf": [
+                        {
+                          "$ref": "#/components/schemas/AcStateResponse"
+                        },
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string"
+                              },
+                              "podId": {
+                                "type": "string"
+                              },
+                              "time": {
+                                "type": "string",
+                                "format": "date-time"
+                              },
+                              "status": {
+                                "type": "string"
+                              },
+                              "on": {
+                                "type": "boolean"
+                              },
+                              "mode": {
+                                "type": "string"
+                              },
+                              "targetTemp": {
+                                "type": ["integer", "null"]
+                              },
+                              "fanLevel": {
+                                "type": "string"
+                              },
+                              "swing": {
+                                "type": "string"
+                              },
+                              "reason": {
+                                "type": "string"
+                              },
+                              "failureReason": {
+                                "type": "string"
+                              },
+                              "changedProperties": {
+                                "type": "string"
+                              }
+                            }
                           }
                         }
-                      }
+                      ]
                     }
-                  ]
+                  }
                 }
               }
             }
           },
           "401": {
-            "description": "Default Response",
-            "schema": {
-              "$ref": "#/definitions/def-1"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
             }
           },
           "404": {
-            "description": "Default Response",
-            "schema": {
-              "$ref": "#/definitions/def-1"
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
             }
           },
           "500": {
-            "description": "Default Response",
-            "schema": {
-              "$ref": "#/definitions/def-1"
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
             }
           }
         }
@@ -1423,90 +1447,115 @@
         ],
         "parameters": [
           {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "on": {
-                  "type": "boolean"
-                },
-                "mode": {
-                  "type": "string",
-                  "enum": [
-                    "cool",
-                    "heat",
-                    "fan",
-                    "dry",
-                    "auto"
-                  ]
-                },
-                "targetTemperature": {
-                  "type": "integer",
-                  "minimum": 16,
-                  "maximum": 30
-                },
-                "fanLevel": {
-                  "type": "string",
-                  "enum": [
-                    "auto",
-                    "quiet",
-                    "low",
-                    "medium",
-                    "high"
-                  ]
-                },
-                "swing": {
-                  "type": "string",
-                  "enum": [
-                    "stopped",
-                    "rangeFull",
-                    "horizontal",
-                    "vertical"
-                  ]
-                }
-              },
-              "required": [
-                "on"
-              ]
-            }
-          },
-          {
-            "type": "string",
-            "required": true,
+            "name": "podId",
             "in": "path",
-            "name": "podId"
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "on": {
+                    "type": "boolean"
+                  },
+                  "mode": {
+                    "type": "string",
+                    "enum": [
+                      "cool",
+                      "heat",
+                      "fan",
+                      "dry",
+                      "auto"
+                    ]
+                  },
+                  "targetTemperature": {
+                    "type": "integer",
+                    "minimum": 16,
+                    "maximum": 30
+                  },
+                  "fanLevel": {
+                    "type": "string",
+                    "enum": [
+                      "auto",
+                      "quiet",
+                      "low",
+                      "medium",
+                      "high"
+                    ]
+                  },
+                  "swing": {
+                    "type": "string",
+                    "enum": [
+                      "stopped",
+                      "rangeFull",
+                      "horizontal",
+                      "vertical"
+                    ]
+                  }
+                },
+                "required": [
+                  "on"
+                ]
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
-            "description": "Default Response",
-            "schema": {
-              "$ref": "#/definitions/def-2"
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessMessageResponse"
+                }
+              }
             }
           },
           "400": {
-            "description": "Default Response",
-            "schema": {
-              "$ref": "#/definitions/def-1"
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
             }
           },
           "401": {
-            "description": "Default Response",
-            "schema": {
-              "$ref": "#/definitions/def-1"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
             }
           },
           "404": {
-            "description": "Default Response",
-            "schema": {
-              "$ref": "#/definitions/def-1"
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
             }
           },
           "500": {
-            "description": "Default Response",
-            "schema": {
-              "$ref": "#/definitions/def-1"
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
             }
           }
         }
@@ -1520,100 +1569,134 @@
         ],
         "parameters": [
           {
-            "type": "string",
-            "required": false,
+            "name": "term",
             "in": "query",
-            "name": "term"
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
-            "type": "string",
-            "required": false,
+            "name": "name",
             "in": "query",
-            "name": "name"
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
-            "type": "string",
-            "required": false,
+            "name": "brand",
             "in": "query",
-            "name": "brand"
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
-            "type": "string",
-            "required": false,
+            "name": "type",
             "in": "query",
-            "name": "type"
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
-            "type": "string",
-            "format": "uuid",
-            "required": false,
+            "name": "storeId",
             "in": "query",
-            "name": "storeId"
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
           },
           {
-            "type": "string",
-            "format": "uuid",
-            "required": false,
+            "name": "deviceId",
             "in": "query",
-            "name": "deviceId"
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
           },
           {
-            "type": "string",
-            "required": false,
+            "name": "podId",
             "in": "query",
-            "name": "podId"
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
-            "type": "integer",
-            "minimum": 1,
-            "default": 1,
-            "required": false,
+            "name": "page",
             "in": "query",
-            "name": "page"
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
           },
           {
-            "type": "integer",
-            "minimum": 1,
-            "maximum": 100,
-            "default": 10,
-            "required": false,
+            "name": "rowsPerPage",
             "in": "query",
-            "name": "rowsPerPage"
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 10
+            }
           },
           {
-            "type": "string",
-            "required": false,
+            "name": "order",
             "in": "query",
-            "name": "order"
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           },
           {
-            "type": "string",
-            "enum": [
-              "ASC",
-              "DESC"
-            ],
-            "required": false,
+            "name": "sort",
             "in": "query",
-            "name": "sort"
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "ASC",
+                "DESC"
+              ]
+            }
           }
         ],
         "responses": {
           "200": {
-            "description": "Default Response",
-            "schema": {
-              "$ref": "#/definitions/def-16"
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssetListResponse"
+                }
+              }
             }
           },
           "401": {
-            "description": "Default Response",
-            "schema": {
-              "$ref": "#/definitions/def-1"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
             }
           },
           "500": {
-            "description": "Default Response",
-            "schema": {
-              "$ref": "#/definitions/def-1"
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
             }
           }
         }
@@ -1623,38 +1706,55 @@
         "tags": [
           "assets"
         ],
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "$ref": "#/definitions/def-18"
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAsset"
+              }
             }
           }
-        ],
+        },
         "responses": {
           "201": {
-            "description": "Default Response",
-            "schema": {
-              "$ref": "#/definitions/def-17"
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssetDetailResponse"
+                }
+              }
             }
           },
           "400": {
-            "description": "Default Response",
-            "schema": {
-              "$ref": "#/definitions/def-1"
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
             }
           },
           "401": {
-            "description": "Default Response",
-            "schema": {
-              "$ref": "#/definitions/def-1"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
             }
           },
           "500": {
-            "description": "Default Response",
-            "schema": {
-              "$ref": "#/definitions/def-1"
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
             }
           }
         }
@@ -1668,36 +1768,54 @@
         ],
         "parameters": [
           {
-            "type": "string",
-            "format": "uuid",
-            "required": true,
+            "name": "assetId",
             "in": "path",
-            "name": "assetId"
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
           }
         ],
         "responses": {
           "200": {
-            "description": "Default Response",
-            "schema": {
-              "$ref": "#/definitions/def-17"
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssetDetailResponse"
+                }
+              }
             }
           },
           "401": {
-            "description": "Default Response",
-            "schema": {
-              "$ref": "#/definitions/def-1"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
             }
           },
           "404": {
-            "description": "Default Response",
-            "schema": {
-              "$ref": "#/definitions/def-1"
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
             }
           },
           "500": {
-            "description": "Default Response",
-            "schema": {
-              "$ref": "#/definitions/def-1"
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
             }
           }
         }
@@ -1709,49 +1827,74 @@
         ],
         "parameters": [
           {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "$ref": "#/definitions/def-19"
-            }
-          },
-          {
-            "type": "string",
-            "format": "uuid",
-            "required": true,
+            "name": "assetId",
             "in": "path",
-            "name": "assetId"
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
           }
         ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAsset"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
-            "description": "Default Response",
-            "schema": {
-              "$ref": "#/definitions/def-17"
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssetDetailResponse"
+                }
+              }
             }
           },
           "400": {
-            "description": "Default Response",
-            "schema": {
-              "$ref": "#/definitions/def-1"
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
             }
           },
           "401": {
-            "description": "Default Response",
-            "schema": {
-              "$ref": "#/definitions/def-1"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
             }
           },
           "404": {
-            "description": "Default Response",
-            "schema": {
-              "$ref": "#/definitions/def-1"
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
             }
           },
           "500": {
-            "description": "Default Response",
-            "schema": {
-              "$ref": "#/definitions/def-1"
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
             }
           }
         }
@@ -1763,66 +1906,60 @@
         ],
         "parameters": [
           {
-            "type": "string",
-            "format": "uuid",
-            "required": true,
+            "name": "assetId",
             "in": "path",
-            "name": "assetId"
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
           }
         ],
         "responses": {
           "200": {
-            "description": "Default Response",
-            "schema": {
-              "$ref": "#/definitions/def-2"
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessMessageResponse"
+                }
+              }
             }
           },
           "401": {
-            "description": "Default Response",
-            "schema": {
-              "$ref": "#/definitions/def-1"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
             }
           },
           "404": {
-            "description": "Default Response",
-            "schema": {
-              "$ref": "#/definitions/def-1"
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
             }
           },
           "500": {
-            "description": "Default Response",
-            "schema": {
-              "$ref": "#/definitions/def-1"
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
             }
           }
         }
       }
     }
   },
-  "host": "zencool.enigmacamp.com",
-  "schemes": [
-    "https"
-  ],
-  "basePath": "/poc",
-  "consumes": [
-    "application/json"
-  ],
-  "produces": [
-    "application/json"
-  ],
-  "securityDefinitions": {
-    "apiKey": {
-      "type": "apiKey",
-      "name": "X-API-Key",
-      "in": "header",
-      "description": "API key for authentication"
-    }
-  },
-  "security": [
-    {
-      "apiKey": []
-    }
-  ],
   "tags": [
     {
       "name": "stores",
