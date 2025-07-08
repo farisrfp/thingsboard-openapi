@@ -1020,7 +1020,7 @@
         }
       }
     },
-    "/api/v1/devices/": {
+    "/api/v1/devicess/": {
       "get": {
         "summary": "List devices by store",
         "tags": [
