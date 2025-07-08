@@ -1,0 +1,1844 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "ZenCool API",
+    "description": "API for managing IoT air conditioning systems",
+    "version": "1.0.0"
+  },
+  "definitions": {
+    "def-0": {
+      "type": "object",
+      "properties": {
+        "page": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "rowsPerPage": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "totalPages": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "totalRows": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "page",
+        "rowsPerPage",
+        "totalPages",
+        "totalRows"
+      ],
+      "additionalProperties": false,
+      "title": "PagingResponse"
+    },
+    "def-1": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "const": "error"
+        },
+        "message": {
+          "type": "string"
+        },
+        "code": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "status",
+        "message",
+        "code"
+      ],
+      "additionalProperties": false,
+      "title": "ErrorResponse"
+    },
+    "def-2": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "const": "success"
+        },
+        "result": {
+          "type": "object",
+          "properties": {
+            "message": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "message"
+          ]
+        }
+      },
+      "required": [
+        "status",
+        "result"
+      ],
+      "additionalProperties": false,
+      "title": "SuccessMessageResponse"
+    },
+    "def-3": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "name": {
+          "type": "string"
+        },
+        "address": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "latitude": {
+          "type": [
+            "null",
+            "string"
+          ]
+        },
+        "longitude": {
+          "type": [
+            "null",
+            "string"
+          ]
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "address",
+        "city"
+      ],
+      "additionalProperties": false,
+      "title": "StoreResponse"
+    },
+    "def-4": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "const": "success"
+        },
+        "result": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/def-3"
+          }
+        },
+        "paging": {
+          "$ref": "#/definitions/def-0"
+        }
+      },
+      "required": [
+        "status",
+        "result"
+      ],
+      "title": "StoreListResponse"
+    },
+    "def-5": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "const": "success"
+        },
+        "result": {
+          "$ref": "#/definitions/def-3"
+        }
+      },
+      "required": [
+        "status",
+        "result"
+      ],
+      "title": "StoreDetailResponse"
+    },
+    "def-6": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "deviceId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "storeId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "podId": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "brand": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "powerConsumption": {
+          "type": [
+            "null",
+            "integer"
+          ]
+        },
+        "serialNumber": {
+          "type": [
+            "null",
+            "string"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "deviceId",
+        "storeId",
+        "podId",
+        "name"
+      ],
+      "additionalProperties": false,
+      "title": "DeviceAssetResponse"
+    },
+    "def-7": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "storeId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "name": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "store": {
+          "$ref": "#/definitions/def-3"
+        },
+        "assets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/def-6"
+          }
+        },
+        "pods": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/def-10"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "storeId",
+        "name",
+        "createdAt",
+        "updatedAt"
+      ],
+      "additionalProperties": false,
+      "title": "DeviceResponse"
+    },
+    "def-8": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "const": "success"
+        },
+        "result": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/def-7"
+          }
+        },
+        "paging": {
+          "$ref": "#/definitions/def-0"
+        }
+      },
+      "required": [
+        "status",
+        "result"
+      ],
+      "title": "DeviceListResponse"
+    },
+    "def-9": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "const": "success"
+        },
+        "result": {
+          "$ref": "#/definitions/def-7"
+        }
+      },
+      "required": [
+        "status",
+        "result"
+      ],
+      "title": "DeviceDetailResponse"
+    },
+    "def-10": {
+      "type": "object",
+      "properties": {
+        "podId": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "roomName": {
+          "type": "string"
+        },
+        "acState": {
+          "oneOf": [
+            {
+              "$ref": "#/definitions/def-12"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "measurements": {
+          "oneOf": [
+            {
+              "$ref": "#/definitions/def-11"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "connectionStatus": {
+          "type": [
+            "null",
+            "object"
+          ],
+          "properties": {
+            "isAlive": {
+              "type": "boolean"
+            },
+            "lastSeen": {
+              "type": [
+                "null",
+                "string"
+              ],
+              "format": "date-time"
+            }
+          },
+          "required": [
+            "isAlive"
+          ]
+        }
+      },
+      "required": [
+        "podId",
+        "name",
+        "roomName"
+      ],
+      "additionalProperties": false,
+      "title": "PodResponse"
+    },
+    "def-11": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "temperature": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "humidity": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "feelsLike": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "rssi": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "tvoc": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "co2": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "iaq": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        }
+      },
+      "required": [],
+      "additionalProperties": false,
+      "title": "MeasurementsResponse"
+    },
+    "def-12": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "on": {
+          "type": "boolean"
+        },
+        "mode": {
+          "type": "string",
+          "enum": [
+            "cool",
+            "heat",
+            "fan",
+            "dry",
+            "auto"
+          ]
+        },
+        "targetTemperature": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 16,
+          "maximum": 30
+        },
+        "temperatureUnit": {
+          "type": "string",
+          "enum": [
+            "C",
+            "F"
+          ]
+        },
+        "fanLevel": {
+          "type": "string",
+          "enum": [
+            "quiet",
+            "low",
+            "medium",
+            "high",
+            "auto"
+          ]
+        },
+        "swing": {
+          "type": "string",
+          "enum": [
+            "stopped",
+            "rangeFull",
+            "horizontal",
+            "vertical"
+          ]
+        },
+        "timestamp": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        }
+      },
+      "required": [],
+      "additionalProperties": false,
+      "title": "AcStateResponse"
+    },
+    "def-13": {
+      "type": "object",
+      "properties": {
+        "sampleDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "temperature": {
+          "type": "number"
+        },
+        "humidity": {
+          "type": "number"
+        },
+        "tvoc": {
+          "type": "integer"
+        },
+        "co2": {
+          "type": "integer"
+        },
+        "iaq": {
+          "type": "integer"
+        },
+        "podId": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "sampleDate",
+        "temperature",
+        "humidity",
+        "podId"
+      ],
+      "additionalProperties": false,
+      "title": "HistoricalMeasurement"
+    },
+    "def-14": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "const": "success"
+        },
+        "result": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/def-13"
+          }
+        }
+      },
+      "required": [
+        "status",
+        "result"
+      ],
+      "title": "HistoricalMeasurementsResponse"
+    },
+    "def-15": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "deviceId": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "format": "uuid"
+        },
+        "storeId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "podId": {
+          "type": [
+            "null",
+            "string"
+          ]
+        },
+        "name": {
+          "type": "string"
+        },
+        "brand": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "powerConsumption": {
+          "type": [
+            "null",
+            "integer"
+          ]
+        },
+        "serialNumber": {
+          "type": [
+            "null",
+            "string"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "storeId",
+        "name",
+        "brand",
+        "type"
+      ],
+      "additionalProperties": false,
+      "title": "AssetResponse"
+    },
+    "def-16": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "const": "success"
+        },
+        "result": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/def-15"
+          }
+        },
+        "paging": {
+          "$ref": "#/definitions/def-0"
+        }
+      },
+      "required": [
+        "status",
+        "result"
+      ],
+      "title": "AssetListResponse"
+    },
+    "def-17": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "const": "success"
+        },
+        "result": {
+          "$ref": "#/definitions/def-15"
+        }
+      },
+      "required": [
+        "status",
+        "result"
+      ],
+      "title": "AssetDetailResponse"
+    },
+    "def-18": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "deviceId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "storeId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "podId": {
+          "type": "string"
+        },
+        "brand": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "type": "string",
+          "minLength": 1
+        },
+        "powerConsumption": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "serialNumber": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "storeId",
+        "brand",
+        "type"
+      ],
+      "additionalProperties": false,
+      "title": "CreateAsset"
+    },
+    "def-19": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "deviceId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "storeId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "podId": {
+          "type": "string"
+        },
+        "brand": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "type": "string",
+          "minLength": 1
+        },
+        "powerConsumption": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "serialNumber": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "storeId",
+        "brand",
+        "type"
+      ],
+      "additionalProperties": false,
+      "title": "UpdateAsset"
+    },
+    "def-20": {
+      "type": "object",
+      "properties": {
+        "term": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "brand": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "storeId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "deviceId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "podId": {
+          "type": "string"
+        },
+        "page": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 1
+        },
+        "rowsPerPage": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 10
+        },
+        "order": {
+          "type": "string"
+        },
+        "sort": {
+          "type": "string",
+          "enum": [
+            "ASC",
+            "DESC"
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "AssetQuery"
+    }
+  },
+  "paths": {
+    "/api/v1/stores/": {
+      "get": {
+        "summary": "List all stores",
+        "tags": [
+          "stores"
+        ],
+        "parameters": [
+          {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1,
+            "required": false,
+            "in": "query",
+            "name": "page"
+          },
+          {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 10,
+            "required": false,
+            "in": "query",
+            "name": "rowsPerPage"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "schema": {
+              "$ref": "#/definitions/def-4"
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "schema": {
+              "$ref": "#/definitions/def-1"
+            }
+          },
+          "500": {
+            "description": "Default Response",
+            "schema": {
+              "$ref": "#/definitions/def-1"
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new store",
+        "tags": [
+          "stores"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "address": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "city": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "latitude": {
+                  "type": "string"
+                },
+                "longitude": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "name",
+                "address",
+                "city"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Default Response",
+            "schema": {
+              "$ref": "#/definitions/def-5"
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "schema": {
+              "$ref": "#/definitions/def-1"
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "schema": {
+              "$ref": "#/definitions/def-1"
+            }
+          },
+          "500": {
+            "description": "Default Response",
+            "schema": {
+              "$ref": "#/definitions/def-1"
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/stores/{storeId}": {
+      "get": {
+        "summary": "Get store by ID",
+        "tags": [
+          "stores"
+        ],
+        "parameters": [
+          {
+            "type": "string",
+            "format": "uuid",
+            "required": true,
+            "in": "path",
+            "name": "storeId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "schema": {
+              "$ref": "#/definitions/def-5"
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "schema": {
+              "$ref": "#/definitions/def-1"
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "schema": {
+              "$ref": "#/definitions/def-1"
+            }
+          },
+          "500": {
+            "description": "Default Response",
+            "schema": {
+              "$ref": "#/definitions/def-1"
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update store",
+        "tags": [
+          "stores"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "address": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "city": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "latitude": {
+                  "type": "string"
+                },
+                "longitude": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          {
+            "type": "string",
+            "format": "uuid",
+            "required": true,
+            "in": "path",
+            "name": "storeId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "schema": {
+              "$ref": "#/definitions/def-5"
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "schema": {
+              "$ref": "#/definitions/def-1"
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "schema": {
+              "$ref": "#/definitions/def-1"
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "schema": {
+              "$ref": "#/definitions/def-1"
+            }
+          },
+          "500": {
+            "description": "Default Response",
+            "schema": {
+              "$ref": "#/definitions/def-1"
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete store",
+        "tags": [
+          "stores"
+        ],
+        "parameters": [
+          {
+            "type": "string",
+            "format": "uuid",
+            "required": true,
+            "in": "path",
+            "name": "storeId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "schema": {
+              "$ref": "#/definitions/def-2"
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "schema": {
+              "$ref": "#/definitions/def-1"
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "schema": {
+              "$ref": "#/definitions/def-1"
+            }
+          },
+          "500": {
+            "description": "Default Response",
+            "schema": {
+              "$ref": "#/definitions/def-1"
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/devices/": {
+      "get": {
+        "summary": "List devices by store",
+        "tags": [
+          "devices"
+        ],
+        "parameters": [
+          {
+            "type": "string",
+            "format": "uuid",
+            "required": true,
+            "in": "query",
+            "name": "storeId"
+          },
+          {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1,
+            "required": false,
+            "in": "query",
+            "name": "page"
+          },
+          {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 10,
+            "required": false,
+            "in": "query",
+            "name": "rowsPerPage"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "schema": {
+              "$ref": "#/definitions/def-8"
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "schema": {
+              "$ref": "#/definitions/def-1"
+            }
+          },
+          "500": {
+            "description": "Default Response",
+            "schema": {
+              "$ref": "#/definitions/def-1"
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new device",
+        "tags": [
+          "devices"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "storeId": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              },
+              "required": [
+                "name",
+                "storeId"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Default Response",
+            "schema": {
+              "$ref": "#/definitions/def-9"
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "schema": {
+              "$ref": "#/definitions/def-1"
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "schema": {
+              "$ref": "#/definitions/def-1"
+            }
+          },
+          "500": {
+            "description": "Default Response",
+            "schema": {
+              "$ref": "#/definitions/def-1"
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/devices/{deviceId}": {
+      "get": {
+        "summary": "Get device by ID",
+        "tags": [
+          "devices"
+        ],
+        "parameters": [
+          {
+            "type": "string",
+            "format": "uuid",
+            "required": true,
+            "in": "path",
+            "name": "deviceId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "schema": {
+              "$ref": "#/definitions/def-9"
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "schema": {
+              "$ref": "#/definitions/def-1"
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "schema": {
+              "$ref": "#/definitions/def-1"
+            }
+          },
+          "500": {
+            "description": "Default Response",
+            "schema": {
+              "$ref": "#/definitions/def-1"
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update device (name and storeId only)",
+        "tags": [
+          "devices"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "storeId": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            }
+          },
+          {
+            "type": "string",
+            "format": "uuid",
+            "required": true,
+            "in": "path",
+            "name": "deviceId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "schema": {
+              "$ref": "#/definitions/def-9"
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "schema": {
+              "$ref": "#/definitions/def-1"
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "schema": {
+              "$ref": "#/definitions/def-1"
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "schema": {
+              "$ref": "#/definitions/def-1"
+            }
+          },
+          "500": {
+            "description": "Default Response",
+            "schema": {
+              "$ref": "#/definitions/def-1"
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/pods/{podId}/historicalMeasurements": {
+      "get": {
+        "summary": "Get historical measurements for a pod",
+        "tags": [
+          "pods"
+        ],
+        "parameters": [
+          {
+            "type": "string",
+            "format": "date",
+            "description": "Date in YYYY-MM-DD format",
+            "required": true,
+            "in": "query",
+            "name": "date"
+          },
+          {
+            "type": "string",
+            "required": true,
+            "in": "path",
+            "name": "podId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "schema": {
+              "$ref": "#/definitions/def-14"
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "schema": {
+              "$ref": "#/definitions/def-1"
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "schema": {
+              "$ref": "#/definitions/def-1"
+            }
+          },
+          "500": {
+            "description": "Default Response",
+            "schema": {
+              "$ref": "#/definitions/def-1"
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/pods/{podId}/acStates": {
+      "get": {
+        "summary": "Get current AC state or historical AC states",
+        "tags": [
+          "pods"
+        ],
+        "parameters": [
+          {
+            "type": "string",
+            "format": "date",
+            "description": "Date in YYYY-MM-DD format for historical states",
+            "required": false,
+            "in": "query",
+            "name": "date"
+          },
+          {
+            "type": "string",
+            "required": true,
+            "in": "path",
+            "name": "podId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "enum": [
+                    "success"
+                  ]
+                },
+                "result": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/definitions/def-12"
+                    },
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "podId": {
+                            "type": "string"
+                          },
+                          "time": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "status": {
+                            "type": "string"
+                          },
+                          "on": {
+                            "type": "boolean"
+                          },
+                          "mode": {
+                            "type": "string"
+                          },
+                          "targetTemp": {
+                            "type": [
+                              "integer",
+                              "null"
+                            ]
+                          },
+                          "fanLevel": {
+                            "type": "string"
+                          },
+                          "swing": {
+                            "type": "string"
+                          },
+                          "reason": {
+                            "type": "string"
+                          },
+                          "failureReason": {
+                            "type": "string"
+                          },
+                          "changedProperties": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "schema": {
+              "$ref": "#/definitions/def-1"
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "schema": {
+              "$ref": "#/definitions/def-1"
+            }
+          },
+          "500": {
+            "description": "Default Response",
+            "schema": {
+              "$ref": "#/definitions/def-1"
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Control AC state",
+        "tags": [
+          "pods"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "on": {
+                  "type": "boolean"
+                },
+                "mode": {
+                  "type": "string",
+                  "enum": [
+                    "cool",
+                    "heat",
+                    "fan",
+                    "dry",
+                    "auto"
+                  ]
+                },
+                "targetTemperature": {
+                  "type": "integer",
+                  "minimum": 16,
+                  "maximum": 30
+                },
+                "fanLevel": {
+                  "type": "string",
+                  "enum": [
+                    "auto",
+                    "quiet",
+                    "low",
+                    "medium",
+                    "high"
+                  ]
+                },
+                "swing": {
+                  "type": "string",
+                  "enum": [
+                    "stopped",
+                    "rangeFull",
+                    "horizontal",
+                    "vertical"
+                  ]
+                }
+              },
+              "required": [
+                "on"
+              ]
+            }
+          },
+          {
+            "type": "string",
+            "required": true,
+            "in": "path",
+            "name": "podId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "schema": {
+              "$ref": "#/definitions/def-2"
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "schema": {
+              "$ref": "#/definitions/def-1"
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "schema": {
+              "$ref": "#/definitions/def-1"
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "schema": {
+              "$ref": "#/definitions/def-1"
+            }
+          },
+          "500": {
+            "description": "Default Response",
+            "schema": {
+              "$ref": "#/definitions/def-1"
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/assets/": {
+      "get": {
+        "summary": "List all assets with filtering",
+        "tags": [
+          "assets"
+        ],
+        "parameters": [
+          {
+            "type": "string",
+            "required": false,
+            "in": "query",
+            "name": "term"
+          },
+          {
+            "type": "string",
+            "required": false,
+            "in": "query",
+            "name": "name"
+          },
+          {
+            "type": "string",
+            "required": false,
+            "in": "query",
+            "name": "brand"
+          },
+          {
+            "type": "string",
+            "required": false,
+            "in": "query",
+            "name": "type"
+          },
+          {
+            "type": "string",
+            "format": "uuid",
+            "required": false,
+            "in": "query",
+            "name": "storeId"
+          },
+          {
+            "type": "string",
+            "format": "uuid",
+            "required": false,
+            "in": "query",
+            "name": "deviceId"
+          },
+          {
+            "type": "string",
+            "required": false,
+            "in": "query",
+            "name": "podId"
+          },
+          {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1,
+            "required": false,
+            "in": "query",
+            "name": "page"
+          },
+          {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 10,
+            "required": false,
+            "in": "query",
+            "name": "rowsPerPage"
+          },
+          {
+            "type": "string",
+            "required": false,
+            "in": "query",
+            "name": "order"
+          },
+          {
+            "type": "string",
+            "enum": [
+              "ASC",
+              "DESC"
+            ],
+            "required": false,
+            "in": "query",
+            "name": "sort"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "schema": {
+              "$ref": "#/definitions/def-16"
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "schema": {
+              "$ref": "#/definitions/def-1"
+            }
+          },
+          "500": {
+            "description": "Default Response",
+            "schema": {
+              "$ref": "#/definitions/def-1"
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new asset",
+        "tags": [
+          "assets"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/def-18"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Default Response",
+            "schema": {
+              "$ref": "#/definitions/def-17"
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "schema": {
+              "$ref": "#/definitions/def-1"
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "schema": {
+              "$ref": "#/definitions/def-1"
+            }
+          },
+          "500": {
+            "description": "Default Response",
+            "schema": {
+              "$ref": "#/definitions/def-1"
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/assets/{assetId}": {
+      "get": {
+        "summary": "Get asset by ID",
+        "tags": [
+          "assets"
+        ],
+        "parameters": [
+          {
+            "type": "string",
+            "format": "uuid",
+            "required": true,
+            "in": "path",
+            "name": "assetId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "schema": {
+              "$ref": "#/definitions/def-17"
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "schema": {
+              "$ref": "#/definitions/def-1"
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "schema": {
+              "$ref": "#/definitions/def-1"
+            }
+          },
+          "500": {
+            "description": "Default Response",
+            "schema": {
+              "$ref": "#/definitions/def-1"
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update asset",
+        "tags": [
+          "assets"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/def-19"
+            }
+          },
+          {
+            "type": "string",
+            "format": "uuid",
+            "required": true,
+            "in": "path",
+            "name": "assetId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "schema": {
+              "$ref": "#/definitions/def-17"
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "schema": {
+              "$ref": "#/definitions/def-1"
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "schema": {
+              "$ref": "#/definitions/def-1"
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "schema": {
+              "$ref": "#/definitions/def-1"
+            }
+          },
+          "500": {
+            "description": "Default Response",
+            "schema": {
+              "$ref": "#/definitions/def-1"
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete asset",
+        "tags": [
+          "assets"
+        ],
+        "parameters": [
+          {
+            "type": "string",
+            "format": "uuid",
+            "required": true,
+            "in": "path",
+            "name": "assetId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "schema": {
+              "$ref": "#/definitions/def-2"
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "schema": {
+              "$ref": "#/definitions/def-1"
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "schema": {
+              "$ref": "#/definitions/def-1"
+            }
+          },
+          "500": {
+            "description": "Default Response",
+            "schema": {
+              "$ref": "#/definitions/def-1"
+            }
+          }
+        }
+      }
+    }
+  },
+  "host": "zencool.enigmacamp.com",
+  "schemes": [
+    "https"
+  ],
+  "basePath": "/poc",
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "securityDefinitions": {
+    "apiKey": {
+      "type": "apiKey",
+      "name": "X-API-Key",
+      "in": "header",
+      "description": "API key for authentication"
+    }
+  },
+  "security": [
+    {
+      "apiKey": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "stores",
+      "description": "Store management endpoints"
+    },
+    {
+      "name": "devices",
+      "description": "Device management endpoints"
+    },
+    {
+      "name": "pods",
+      "description": "Pod (sensor) endpoints"
+    },
+    {
+      "name": "assets",
+      "description": "Asset (AC unit) management endpoints"
+    }
+  ]
+}
